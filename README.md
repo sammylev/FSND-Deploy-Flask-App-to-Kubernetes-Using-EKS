@@ -90,9 +90,13 @@ curl --request GET 'a7bd6a6a7506811ea86cd0a7e17e8e7c-1191677054.us-east-1.elb.am
 #Test Endpoints
 kubectl get services simple-jwt-api -o wide
 
-export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST <EXTERNAL-IP URL>/auth  | jq -r '.token'`
+export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST ad1ec4d47511511ea98160e7aab60e03-940676711.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
 
-curl --request GET '<EXTERNAL-IP URL>/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
+curl --request GET 'ad1ec4d47511511ea98160e7aab60e03-940676711.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
+
+export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST ad1ec4d47511511ea98160e7aab60e03-940676711.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
+
+curl --request GET 'ad1ec4d47511511ea98160e7aab60e03-940676711.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
 
 #Adding Tests
 
