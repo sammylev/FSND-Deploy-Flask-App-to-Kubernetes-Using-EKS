@@ -94,6 +94,8 @@ export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password123
 
 curl --request GET '<EXTERNAL-IP URL>/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
 
+#Adding Tests
+
 
 
 
