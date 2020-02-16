@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 A simple app to create a JWT token.
 """
@@ -11,7 +12,7 @@ import jwt
 from flask import Flask, jsonify, request, abort
 
 
-JWT_SECRET = os.environ.get('JWT_SECRET', 'abc123abc1234')
+JWT_SECRET = os.environ.get('JWT_SECRET', 'panda')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
 
 

@@ -36,3 +36,14 @@ Completing the project involves several steps:
 6. Create a CodeBuild stage which will build, test, and deploy your code
 
 For more detail about each of these steps, see the project lesson [here](https://classroom.udacity.com/nanodegrees/nd004/parts/1d842ebf-5b10-4749-9e5e-ef28fe98f173/modules/ac13842f-c841-4c1a-b284-b47899f4613d/lessons/becb2dac-c108-4143-8f6c-11b30413e28d/concepts/092cdb35-28f7-4145-b6e6-6278b8dd7527).
+
+
+export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST localhost:8080/auth  | jq -r '.token'`
+
+docker build --tag jwt-api-test .
+
+docker run -p 80:8080 --env-file='env_file' jwt-api-test
+
+export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST localhost:80/auth  | jq -r '.token'`
+
+curl --request GET 'http://127.0.0.1:80/contents' -H "Authorization: Bearer ${TOKEN}" | jq .
