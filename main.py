@@ -86,6 +86,7 @@ def auth():
 def decode_jwt():
     """
     Check user token and return non-secret data
+    References JWT secret
     """
     if not 'Authorization' in request.headers:
         abort(401)
