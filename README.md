@@ -37,13 +37,46 @@ Completing the project involves several steps:
 
 For more detail about each of these steps, see the project lesson [here](https://classroom.udacity.com/nanodegrees/nd004/parts/1d842ebf-5b10-4749-9e5e-ef28fe98f173/modules/ac13842f-c841-4c1a-b284-b47899f4613d/lessons/becb2dac-c108-4143-8f6c-11b30413e28d/concepts/092cdb35-28f7-4145-b6e6-6278b8dd7527).
 
-
+#Local:
 export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST localhost:8080/auth  | jq -r '.token'`
 
+echo $TOKEN
+
+curl --request GET 'http://127.0.0.1:8080/contents' -H "Authorization: Bearer ${TOKEN}" | jq .
+
+#Docker:
 docker build --tag jwt-api-test .
 
 docker run -p 80:8080 --env-file='env_file' jwt-api-test
 
 export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST localhost:80/auth  | jq -r '.token'`
 
-curl --request GET 'http://127.0.0.1:80/contents' -H "Authorization: Bearer ${TOKEN}" | jq .
+#Create Cluster:
+eksctl create cluster --name simple-jwt-api
+
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+TRUST="{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::${ACCOUNT_ID}:root\" }, \"Action\": \"sts:AssumeRole\" } ] }"
+
+aws iam create-role --role-name UdacityFlaskDeployCBKubectlRole --assume-role-policy-document "$TRUST" --output text --query 'Role.Arn'
+
+echo '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Action": [ "eks:Describe*", "ssm:GetParameters" ], "Resource": "*" } ] }' > /tmp/iam-role-policy 
+
+aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-name eks-describe --policy-document file:///tmp/iam-role-policy
+
+kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
+
+  - rolearn: arn:aws:iam::154131462783:role/UdacityFlaskDeployCBKubectlRole
+    username: build
+    groups:
+      - system:masters
+
+
+
+kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+
+aws ssm put-parameter --name JWT_SECRET --value "panda" --type SecureString
+
+
+
+
