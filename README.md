@@ -77,6 +77,7 @@ kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-pat
 
 aws ssm put-parameter --name JWT_SECRET --value "panda" --type SecureString
 
+kubectl get services udacity-simple-jwt-api -o wide
 
 
 
