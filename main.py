@@ -65,6 +65,7 @@ def health():
 def auth():
     """
     Create JWT token based on email.
+    Error if no email or password provided.
     """
     request_data = request.get_json()
     email = request_data.get('email')
