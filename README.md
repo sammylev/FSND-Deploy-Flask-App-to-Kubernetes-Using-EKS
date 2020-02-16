@@ -64,16 +64,14 @@ echo '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Action": [
 
 aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-name eks-describe --policy-document file:///tmp/iam-role-policy
 
+#Update Config Map
 kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
 
-  - rolearn: arn:aws:iam::154131462783:role/UdacityFlaskDeployCBKubectlRole
-    username: build
-    groups:
-      - system:masters
-
-
+(Update file)
 
 kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+
+#Deploy to AWS
 
 aws ssm put-parameter --name JWT_SECRET --value "panda" --type SecureString
 
