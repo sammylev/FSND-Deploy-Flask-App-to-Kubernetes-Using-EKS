@@ -79,5 +79,10 @@ aws ssm put-parameter --name JWT_SECRET --value "panda" --type SecureString
 
 kubectl get services udacity-simple-jwt-api -o wide
 
+export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST <EXTERNAL-IP URL>/auth  | jq -r '.token'`
+
+curl --request GET '<EXTERNAL-IP URL>/contents' -H "Authorization: Bearer ${TOKEN}" | jq
+
+
 
 
