@@ -51,6 +51,10 @@ docker run -p 80:8080 --env-file='env_file' jwt-api-test
 
 export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST localhost:80/auth  | jq -r '.token'`
 
+curl --request GET 'http://127.0.0.1:80/contents' -H "Authorization: Bearer ${TOKEN}" | jq .
+
+docker kill $(docker ps -q)
+
 #Create Cluster:
 eksctl create cluster --name simple-jwt-api
 
@@ -73,13 +77,13 @@ kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-pat
 
 #Deploy to AWS
 
-aws ssm put-parameter --name JWT_SECRET --value "panda" --type SecureString
+aws ssm put-parameter --name JWT_SECRET --value "myjwtsecret" --type SecureString
 
 kubectl get services udacity-simple-jwt-api -o wide
 
-export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST <EXTERNAL-IP URL>/auth  | jq -r '.token'`
+export TOKEN=`curl -d '{"email":"sammy.murray@gmail.com","password":"password1234"}' -H "Content-Type: application/json" -X POST a7bd6a6a7506811ea86cd0a7e17e8e7c-1191677054.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
 
-curl --request GET '<EXTERNAL-IP URL>/contents' -H "Authorization: Bearer ${TOKEN}" | jq
+curl --request GET 'a7bd6a6a7506811ea86cd0a7e17e8e7c-1191677054.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq
 
 
 
